@@ -18,6 +18,12 @@
 
    - 만약, active 클래스가 등록되 이후 클릭이벤트 발생 시 이미 등록된 notransition 클래스 이름을 제거한다.
 
+## 개선 사항
+
+- onclick 이벤트에서 발생하는 toggle 및 remove 로직을 조건문을 사용한 하나의 함수로 구현해 코드를 좀 더 간결하고 가독성 높게 만들 수 있을 것으로 생각됨.
+
+- if 조건문을 사용한 부분은 삼항 연산 조건문을 통해 가독성을 높일 수 있을 것으로 생각됨.
+
 [Reference - 1](https://stackoverflow.com/questions/45348222/keep-list-toggle-state-on-page-refresh)
 
 [Reference - 2](https://stackoverflow.com/questions/65693981/keeping-toggle-position-on-page-refresh)
