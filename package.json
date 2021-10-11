@@ -1,0 +1,28 @@
+{
+  "name": "pair_programming",
+  "version": "1.0.0",
+  "description": "pair programming practice",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dbstjrrb12/Pair_programming.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dbstjrrb12/Pair_programming/issues"
+  },
+  "homepage": "https://github.com/dbstjrrb12/Pair_programming#readme",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-html": "^6.2.0",
+    "eslint-plugin-import": "^2.24.2",
+    "prettier": "2.4.1"
+  }
+}
