@@ -17,3 +17,7 @@
    - 리로드 시 transition이 발생하지 않도록, notransition 클래스 이름을 navigation, icon, main 요소노드에 추가한다.
 
    - 만약, active 클래스가 등록되 이후 클릭이벤트 발생 시 이미 등록된 notransition 클래스 이름을 제거한다.
+
+[Reference - 1](https://stackoverflow.com/questions/45348222/keep-list-toggle-state-on-page-refresh)
+
+[Reference - 2](https://stackoverflow.com/questions/65693981/keeping-toggle-position-on-page-refresh)
