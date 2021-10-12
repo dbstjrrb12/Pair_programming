@@ -118,8 +118,6 @@ $startStop.onclick = e => {
     $resetLap.removeAttribute('disabled');
     interval = setInterval(setMilliseconds.increaseMilliSeconds, 10);
   } else {
-    // if ($display.textContent === '00:00:00')
-    //   $resetLap.setAttribute('disabled', 'disabled');
     clearInterval(interval);
   }
   toggle = !toggle;
@@ -156,4 +154,3 @@ $resetLap.onclick = e => {
     lapRender($fragment);
   }
 };
-
