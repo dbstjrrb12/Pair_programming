@@ -156,3 +156,4 @@ $resetLap.onclick = e => {
     lapRender($fragment);
   }
 };
+
