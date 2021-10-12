@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Popup</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: 'Open Sans';
+        font-weight: 300;
+      }
+      .title {
+        color: #db5b33;
+        font-weight: 300;
+        text-align: center;
+        margin: 0;
+      }
+      /* 팝업을 위한 CSS */
+      .popup-button {
+        margin-left: 10px;
+      }
+
+      .modal {
+        position: absolute;
+        top: 0;
+        background: rgba(100, 94, 94, 0.7);
+        width: 100%;
+        height: 100%;
+      }
+
+      .modal-popup {
+        opacity: 1;
+        background: white;
+        position: absolute;
+        max-width: 520px;
+        min-height: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 20%;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 5px red;
+      }
+
+      .popup-title {
+        opacity: 1;
+        margin: 0;
+        text-align: center;
+        color: #db5b33;
+        font-weight: 300;
+        margin-bottom: 20px;
+      }
+
+      .modal-message {
+        margin: 0;
+        word-break: break-all;
+        margin-bottom: 15px;
+      }
+
+      .input-form {
+        display: inline-block;
+      }
+
+      .popup-input {
+        outline: none;
+        border-radius: 2.5px;
+      }
+
+      .popup-input:focus {
+        border-color: blue;
+        border-width: 2.5px;
+        border-radius: 2.5px;
+      }
+
+      .submit-button {
+        cursor: pointer;
+      }
+
+      .cancel-button {
+        cursor: pointer;
+        display: inline-block;
+      }
+
+      .close-button {
+        cursor: pointer;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        border: none;
+        background: none;
+        font-weight: 700;
+        font-size: 20px;
+      }
+
+      .popup-message {
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Popup</h1>
+    <button class="popup-button">toggle popup</button>
+    <!-- 팝업을 위한 HTML -->
+    <div hidden class="modal">
+      <div class="modal-popup">
+        <div>
+          <h2 class="popup-title">Hello!</h2>
+          <p class="modal-message">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laborum
+            optio ab porro magni in sunt ipsam, doloremque minima, itaque
+            sapiente consequatur, repellat velit voluptatum accusantium aperiam.
+            Nostrum sunt reprehenderit nemo!
+          </p>
+          <form class="input-form">
+            <input type="text" class="popup-input" />
+            <button class="submit-button">OK</button>
+          </form>
+          <button class="cancel-button">Cancel</button>
+        </div>
+        <button class="close-button">X</button>
+      </div>
+    </div>
+    <p class="popup-message"></p>
+    <script src="./js/app.js"></script>
+  </body>
+</html>
