@@ -132,6 +132,25 @@
 
         $carouselSlides.ontransitionend = () => {
           $transitionEnd = true;
+          if (
+            +window
+              .getComputedStyle($carouselSlides)
+              .getPropertyValue('--currentSlide') === 5
+          ) {
+            $carouselSlides.style.setProperty('--duration', '0');
+            $carouselSlides.style.setProperty('--currentSlide', '1');
+            $transitionEnd = true;
+          }
+
+          if (
+            +window
+              .getComputedStyle($carouselSlides)
+              .getPropertyValue('--currentSlide') === 0
+          ) {
+            $carouselSlides.style.setProperty('--duration', '0');
+            $carouselSlides.style.setProperty('--currentSlide', '4');
+            $transitionEnd = true;
+          }
         };
 
         $container.onclick = e => {
@@ -151,35 +170,11 @@
               '--currentSlide',
               currentSlide + 1
             );
-
-            if (
-              +window
-                .getComputedStyle($carouselSlides)
-                .getPropertyValue('--currentSlide') === 5
-            ) {
-              setTimeout(() => {
-                $carouselSlides.style.setProperty('--duration', '0');
-                $carouselSlides.style.setProperty('--currentSlide', '1');
-                $transitionEnd = true;
-              }, 500);
-            }
           } else if (e.target.classList.contains('prev')) {
             $carouselSlides.style.setProperty(
               '--currentSlide',
               currentSlide - 1
             );
-
-            if (
-              +window
-                .getComputedStyle($carouselSlides)
-                .getPropertyValue('--currentSlide') === 0
-            ) {
-              setTimeout(() => {
-                $carouselSlides.style.setProperty('--duration', '0');
-                $carouselSlides.style.setProperty('--currentSlide', '4');
-                $transitionEnd = true;
-              }, 500);
-            }
           }
         };
       };
