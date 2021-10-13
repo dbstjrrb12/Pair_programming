@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400"
+      rel="stylesheet"
+    />
+    <title>Carousel Slider</title>
+    <style>
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Open Sans';
+        font-weight: 300;
+        color: #58666e;
+        background-color: #f0f3f4;
+      }
+      .title {
+        color: #db5b33;
+        font-weight: 300;
+        text-align: center;
+      }
+      /* 캐러셀의 window 역할을 한다. */
+      .carousel {
+        position: relative;
+        margin: 0 auto;
+        overflow: hidden;
+        /* carousel 요소의 width 셋팅이 완료될 때까지 감춘다. */
+        opacity: 0;
+      }
+      .carousel-slides {
+        --currentSlide: 0;
+        --duration: 0;
+        /* 수평 정렬 */
+        display: flex;
+        transition: transform calc(var(--duration) * 1ms) ease-out;
+        transform: translate3D(calc(var(--currentSlide) * -100%), 0, 0);
+      }
+      .carousel-slides img {
+        padding: 5px;
+      }
+      /* carousel의 prev, next 버튼 */
+      .carousel-control {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2em;
+        color: #fff;
+        background-color: transparent;
+        border-color: transparent;
+        cursor: pointer;
+        z-index: 99;
+      }
+      .carousel-control:focus {
+        outline: none;
+      }
+      /* carousel의 prev 버튼 */
+      .carousel-control.prev {
+        left: 0;
+      }
+      /* carousel의 next 버튼 */
+      .carousel-control.next {
+        right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Carousel Slider</h1>
+    <div class="carousel">
+      <!-- <div class="carousel-slides">
+        <img src="movies/movie-4.jpg">
+        <img src="movies/movie-1.jpg">
+        <img src="movies/movie-2.jpg">
+        <img src="movies/movie-3.jpg">
+        <img src="movies/movie-4.jpg">
+        <img src="movies/movie-1.jpg">
+      </div>
+      <button class="carousel-control prev">&laquo;</button>
+      <button class="carousel-control next">&raquo;</button> -->
+    </div>
+    <script>
+      const carousel = ($container, images) => {
+        const $fragment = document.createDocumentFragment();
+        const $carouselSlides = document.createElement('div');
+        $carouselSlides.classList.add('carousel-slides');
+
+        images.forEach(image => {
+          const $img = document.createElement('img');
+
+          $img.setAttribute('src', image);
+          $carouselSlides.appendChild($img);
+
+          $container.style.width = $img.naturalWidth + 10 + 'px';
+        });
+
+        const firstImageClone = $carouselSlides.firstElementChild.cloneNode();
+        const lastImageClone = $carouselSlides.lastElementChild.cloneNode();
+
+        $carouselSlides.insertBefore(
+          lastImageClone,
+          $carouselSlides.firstElementChild
+        );
+
+        $carouselSlides.appendChild(firstImageClone);
+
+        const $prevButton = document.createElement('button');
+        $prevButton.innerHTML = '&laquo;';
+        $prevButton.classList.add('carousel-control');
+        $prevButton.classList.add('prev');
+
+        const $nextButton = document.createElement('button');
+        $nextButton.innerHTML = '&raquo;';
+        $nextButton.classList.add('carousel-control');
+        $nextButton.classList.add('next');
+
+        $fragment.appendChild($carouselSlides);
+        $fragment.appendChild($prevButton);
+        $fragment.appendChild($nextButton);
+
+        $container.appendChild($fragment);
+        $container.style.setProperty('opacity', '1');
+        $carouselSlides.style.setProperty('--duration', '1000');
+        $carouselSlides.style.setProperty('--currentSlide', '1');
+
+        let $transitionEnd = true;
+
+        $carouselSlides.ontransitionend = () => {
+          $transitionEnd = true;
+        };
+
+        $container.onclick = e => {
+          if (!e.target.classList.contains('carousel-control')) return;
+          if (!$transitionEnd) return;
+          $transitionEnd = false;
+
+          const currentSlide = +window
+            .getComputedStyle($carouselSlides)
+            .getPropertyValue('--currentSlide');
+
+          if (currentSlide === 1 || currentSlide === 4)
+            $carouselSlides.style.setProperty('--duration', '500');
+
+          if (e.target.classList.contains('next')) {
+            $carouselSlides.style.setProperty(
+              '--currentSlide',
+              currentSlide + 1
+            );
+
+            if (
+              +window
+                .getComputedStyle($carouselSlides)
+                .getPropertyValue('--currentSlide') === 5
+            ) {
+              setTimeout(() => {
+                $carouselSlides.style.setProperty('--duration', '0');
+                $carouselSlides.style.setProperty('--currentSlide', '1');
+                $transitionEnd = true;
+              }, 500);
+            }
+          } else if (e.target.classList.contains('prev')) {
+            $carouselSlides.style.setProperty(
+              '--currentSlide',
+              currentSlide - 1
+            );
+
+            if (
+              +window
+                .getComputedStyle($carouselSlides)
+                .getPropertyValue('--currentSlide') === 0
+            ) {
+              setTimeout(() => {
+                $carouselSlides.style.setProperty('--duration', '0');
+                $carouselSlides.style.setProperty('--currentSlide', '4');
+                $transitionEnd = true;
+              }, 500);
+            }
+          }
+        };
+      };
+
+      carousel(document.querySelector('.carousel'), [
+        'movies/movie-1.jpg',
+        'movies/movie-2.jpg',
+        'movies/movie-3.jpg',
+        'movies/movie-4.jpg'
+      ]);
+    </script>
+  </body>
+</html>
