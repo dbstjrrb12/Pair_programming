@@ -1,4 +1,5 @@
 // DOM Node
+const $body = document.querySelector('body');
 const $datePicker = document.querySelector('.custom-datepicker');
 const $calendarDetail = document.querySelector('.calendar_detail');
 const $calendarGrid = document.querySelector('.calendar_grid');
@@ -7,6 +8,7 @@ const $year = document.querySelector('.year');
 const $prev = document.querySelector('.prev');
 const $next = document.querySelector('.next');
 
+// state
 const MONTH = [
   'January',
   'Febuary',
@@ -23,16 +25,52 @@ const MONTH = [
 ];
 
 const DAY = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-const GRIDSIZE = 42;
+const WEEK = 7;
+
+const yearMonth = (function () {
+  const key = {
+    year: 0,
+    month: 0,
+    day: 0
+  };
+
+  return {
+    getkey() {
+      return key;
+    },
+
+    setkey(year, month, day) {
+      key.year = year;
+      key.month = month;
+      key.day = day;
+    }
+  };
+})();
 
 // state function
-const render = (prevDay, totalDay, firstDate) => {
-  const day = `<ul class="day">${DAY.map(day => `<li><p>${day}</p></li>`).join(
-    ''
-  )}</ul>`;
+const countDay = (prevMonthLastDay, totalDay, lastDate) => {
+  const prevdayCount = prevMonthLastDay >= 6 ? 0 : prevMonthLastDay + 1;
+  return totalDay + (WEEK - (lastDate + 1)) + prevdayCount;
+};
+
+const render = (prevDay, totalDay, firstDate, lastDate, gridCount) => {
+  $calendarGrid.style.setProperty(
+    'grid-template-rows',
+    gridCount > 35 ? 'repeat(7, 1fr)' : 'repeat(6, 1fr)'
+  );
+
+  const start = firstDate === 0 ? 1 : WEEK - firstDate + 1;
+
+  const day = `<ul class="day">${DAY.map(
+    day => `<li class='weekday'><p>${day}</p></li>`
+  ).join('')}</ul>`;
 
   const thisdate = `${Array.from({ length: totalDay }, (_, i) => i + 1)
-    .map(date => `<div class='this-date'>${date}</div>`)
+    .map((date, i) =>
+      (i + 1 - start) % 7 === 0
+        ? `<div class='this-date sunday'>${date}</div>`
+        : `<div class='this-date'>${date}</div>`
+    )
     .join('')}`;
 
   const prevdate = `${Array.from({ length: firstDate }, (_, i) => prevDay - i)
@@ -41,93 +79,132 @@ const render = (prevDay, totalDay, firstDate) => {
     .join('')}`;
 
   const nexdate = `${Array.from(
-    { length: GRIDSIZE - (totalDay + firstDate) },
+    { length: WEEK - (lastDate + 1) },
     (_, i) => i + 1
   )
     .map(date => `<div class='date'>${date}</div>`)
     .join('')}`;
 
   $calendarGrid.innerHTML = day + prevdate + thisdate + nexdate;
+
+  const $today = [...$calendarGrid.querySelectorAll('div.this-date')].filter(
+    (_, i) => i + 1 === yearMonth.getkey().day
+  );
+
+  $today[0].classList.add('select');
 };
 
-const prevNext = (function () {
-  let prev = 0;
-  let next = 0;
-
-  return {
-    getPrev() {
-      return prev;
-    },
-
-    getNext() {
-      return next;
-    },
-
-    setPrev(val = 0) {
-      prev = val && prev + 1;
-    },
-
-    setNext(val = 0) {
-      next = val && next + 1;
-    }
-  };
-})();
-
-const getNow = count => {
+const getNow = () => {
   const now = new Date();
 
-  const nextMonth = now.getMonth() + count;
+  yearMonth.setkey(now.getFullYear(), now.getMonth(), now.getDate());
 
-  if (nextMonth > 12) {
-    prevNext.setNext();
-  } else if (nextMonth < 0) {
-    prevNext.setPrev();
-  }
+  const prevDay = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+  const totalDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const firstDate = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+  const lastDate = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    totalDay
+  ).getDay();
 
-  const key = {
-    year:
-      nextMonth > 12
-        ? now.getFullYear() + 1
-        : nextMonth < 0
-        ? now.getFullYear() - 1
-        : now.getFullYear(),
+  const gridCount = countDay(
+    new Date(now.getFullYear(), now.getMonth(), 0).getDay(),
+    totalDay,
+    lastDate
+  );
 
-    month: nextMonth > 12 ? 0 : nextMonth < 0 ? 12 : nextMonth
-  };
-
-  console.log(key);
-
-  const prevDay = new Date(key.year, key.month, 0).getDate();
-  const totalDay = new Date(key.year, key.month + 1, 0).getDate();
-  const firstDate = new Date(key.year, key.month, 1).getDay();
-
-  $month.textContent = MONTH[key.month % 12];
+  $month.textContent = MONTH[now.getMonth()];
   $year.textContent = now.getFullYear();
 
-  render(prevDay, totalDay, firstDate);
+  render(prevDay, totalDay, firstDate, lastDate, gridCount);
+};
+
+const getNextPrev = count => {
+  // 버튼에 따라 연도, 월 값 세팅하기
+  const now = yearMonth.getkey();
+
+  let { year } = now;
+  let { month } = now;
+  const { day } = now;
+
+  year = month + count >= 12 ? year + 1 : month + count < 0 ? year - 1 : year;
+  month = month + count >= 12 ? 0 : month + count < 0 ? 11 : month + count;
+
+  yearMonth.setkey(year, month, day);
+
+  // 불러오기
+  const newNow = yearMonth.getkey();
+
+  const prevDay = new Date(newNow.year, newNow.month, 0).getDate();
+  const totalDay = new Date(newNow.year, newNow.month + 1, 0).getDate();
+  const firstDate = new Date(newNow.year, newNow.month, 1).getDay();
+  const lastDate = new Date(newNow.year, newNow.month, totalDay).getDay();
+  const gridCount = countDay(
+    new Date(newNow.year, newNow.month, 0).getDay(),
+    totalDay,
+    lastDate
+  );
+
+  $month.textContent = MONTH[newNow.month];
+  $year.textContent = newNow.year;
+
+  render(prevDay, totalDay, firstDate, lastDate, gridCount);
+};
+
+const insertInputValue = () => {
+  const key = yearMonth.getkey();
+
+  return `${key.year}-${key.month < 9 ? `0${key.month + 1}` : key.month + 1}-${
+    key.day < 10 ? `0${key.day}` : key.day
+  }`;
 };
 
 // Event Handler
-$datePicker.onfocus = () => {
-  $calendarDetail.getAttribute('hidden') === 'hidden'
-    ? $calendarDetail.removeAttribute('hidden')
-    : $calendarDetail.setAttribute('hidden', 'hidden');
+$body.onclick = e => {
+  console.log(e.target.className);
+  console.log();
+  if (
+    e.target.classList.contains('custom-datepicker') ||
+    [...document.querySelectorAll('.calendar_detail *')]
+      .map(element => element.className)
+      .includes(e.target.className)
+  )
+    return;
 
-  getNow(0);
+  $calendarDetail.style.setProperty('display', 'none');
+};
+
+$datePicker.onfocus = () => {
+  $calendarDetail.style.setProperty('display', 'flex');
+
+  getNow();
 };
 
 $prev.onclick = () => {
-  prevNext.setPrev(1);
-  console.log(prevNext.getPrev());
+  getNextPrev(-1);
 
-  if (key.month + 1 > 12) key.year += 1;
-
-  getNow(-prevNext.getPrev());
+  $datePicker.value = insertInputValue();
 };
 
 $next.onclick = () => {
-  prevNext.setNext(1);
-  console.log(prevNext.getNext());
+  getNextPrev(1);
 
-  getNow(prevNext.getNext());
+  $datePicker.value = insertInputValue();
+};
+
+$calendarGrid.onclick = ({ target }) => {
+  if (target.matches('.calendar_grid')) return;
+
+  [...$calendarGrid.children].forEach(child => {
+    if (child.classList.contains('select')) child.classList.remove('select');
+  });
+
+  target.classList.add('select');
+
+  const { year, month } = yearMonth.getkey();
+  yearMonth.setkey(year, month, +target.textContent);
+
+  // console.log(month);
+  $datePicker.value = insertInputValue();
 };
