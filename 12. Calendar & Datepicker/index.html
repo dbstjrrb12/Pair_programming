@@ -30,34 +30,46 @@
       }
 
       .calendar {
-        width: 500px;
-        height: 500px;
-        margin: auto;
+        width: 100%;
+        height: 100vh;
       }
 
       .custom-datepicker {
         margin: auto;
         display: block;
         padding: 10px;
-
-        /* box-sizing: content-box; */
       }
 
       .calendar_detail {
+        --calendar-size: 300;
+        --columns: 7;
+
+        width: calc(var(--calendar-size) * 1px);
+        /* height: calc(1.5 * calc(var(--calendar-size) * 1px)); */
+        font-size: calc(var(--calendar-size) / var(--columns) * 2%);
+
+        display: none;
+        flex-direction: column;
+        flex-wrap: wrap;
+
         position: absolute;
         top: 130px;
         left: 50%;
-        transform: translateX(-25%);
+        transform: translateX(-30%);
 
         border-radius: 20px;
         overflow: hidden;
         box-shadow: 5px 10px 10px 10px rgba(0, 0, 0, 0.2);
       }
 
+      .column {
+        flex-basis: calc(var(--calendar-size) / var(--columns) * 100%);
+      }
+
       .calendar_nav {
-        background: green;
+        background: #2cdb58;
         display: flex;
-        flex: 1 1 10%;
+        /* flex: 1 1 10%; */
         justify-content: space-between;
         padding: 20px;
       }
@@ -67,14 +79,15 @@
         text-align: center;
         margin: 0;
         margin-top: 5px;
+        color: white;
       }
 
       .month {
-        font-size: 20px;
+        font-weight: 700;
       }
 
       .year {
-        font-size: 14px;
+        font-size: calc(var(--calendar-size) / var(--columns) * 1.5%);
       }
 
       .next,
@@ -86,16 +99,18 @@
       .next > i,
       .prev > i {
         color: white;
-        font-size: 18px;
+        /* font-size: 18px; */
       }
 
       .calendar_grid {
-        background-color: yellowgreen;
+        background-color: white;
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         grid-template-rows: repeat(7, 1fr);
-        margin: auto;
         text-align: center;
+
+        /* padding 비율 계산 하기 */
+        padding: 0 10px 10px 10px;
       }
 
       .day {
@@ -116,7 +131,35 @@
         margin: 0;
       }
 
+      .sunday {
+        color: red;
+      }
+
+      .this-date,
       .date {
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .select {
+        background-color: #2cdb58;
+        color: white;
+      }
+
+      .this-date:hover,
+      .date:hover {
+        background-color: #2cdb58;
+        color: white;
+        cursor: pointer;
+      }
+
+      .date {
+        color: gray;
+      }
+
+      .weekday {
         color: gray;
       }
 
@@ -132,8 +175,8 @@
         readonly
         placeholder="Select Date"
       />
-      <div class="calendar_detail" hidden="hidden">
-        <div class="calendar_nav">
+      <div class="calendar_detail">
+        <div class="calendar_nav column">
           <button class="prev">
             <i class="bx bxs-left-arrow"></i>
           </button>
@@ -145,17 +188,7 @@
             <i class="bx bxs-right-arrow"></i>
           </button>
         </div>
-        <div class="calendar_grid">
-          <!-- <ul class="day">
-            <li><p>SUN</p></li>
-            <li><p>MON</p></li>
-            <li><p>TUE</p></li>
-            <li><p>WED</p></li>
-            <li><p>THU</p></li>
-            <li><p>FRI</p></li>
-            <li><p>SAT</p></li>
-          </ul> -->
-        </div>
+        <div class="calendar_grid column"></div>
       </div>
     </div>
     <script src="./js/app.js"></script>
