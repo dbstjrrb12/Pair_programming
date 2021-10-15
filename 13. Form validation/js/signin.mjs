@@ -1,6 +1,6 @@
 import * as Node from './node.mjs';
 import {
-  isAllValidate,
+  validationStates,
   validateEmail,
   validatePassword,
   controlPopup
@@ -20,7 +20,7 @@ Node.$signInPassword.onkeyup = e => {
   controlPopup(e.target, 'password');
 };
 
-Node.$signinForm.onsubmit = e => {
+Node.$signInForm.onsubmit = e => {
   e.preventDefault();
 
   toast(e.target);
@@ -31,13 +31,14 @@ Node.$signinForm.onsubmit = e => {
   });
 };
 
-Node.$signupLink.onclick = e => {
+Node.$signUpLink.onclick = e => {
   if (!e.target.matches('.link > a')) return;
 
-  Node.$signinForm.classList.add('hidden');
-  Node.$signupForm.classList.remove('hidden');
+  Node.$signInForm.classList.add('hidden');
+  Node.$signUpForm.classList.remove('hidden');
 
-  isAllValidate.initialize();
+  const GOTOSIGNUP = false;
+  validationStates.initialize(GOTOSIGNUP);
 };
 
 const signin = {};

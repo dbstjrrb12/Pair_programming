@@ -5,36 +5,36 @@ const $errorIcons = document.querySelectorAll('.icon-error');
 const $errorMessages = document.querySelectorAll('.error');
 
 // Signin
-const $signinForm = document.querySelector('form.signin');
+const $signInForm = document.querySelector('form.signin');
 const $signInUserId = document.querySelector('#signin-userid');
 const $signInPassword = document.querySelector('#signin-password');
-const $signinButton = document.querySelector('button.signin');
-const $signupLink = document.querySelectorAll('.link')[0];
-const $signinLink = document.querySelectorAll('.link')[1];
+const $signInButton = document.querySelector('button.signin');
+const $signUpLink = document.querySelectorAll('.link')[0];
+const $signInLink = document.querySelectorAll('.link')[1];
 
 // Signup
-const $signupForm = document.querySelector('form.signup');
-const $signupUserId = document.querySelector('#signup-userid');
-const $signupName = document.querySelector('#signup-name');
-const $signupPassword = document.querySelector('#signup-password');
-const $signupConfirm = document.querySelector('#signup-confirm-password');
-const $signupButton = document.querySelector('button.signup');
+const $signUpForm = document.querySelector('form.signup');
+const $signUpUserId = document.querySelector('#signup-userid');
+const $signUpName = document.querySelector('#signup-name');
+const $signUpPassword = document.querySelector('#signup-password');
+const $signUpConfirm = document.querySelector('#signup-confirm-password');
+const $signUpButton = document.querySelector('button.signup');
 
 export {
   $body,
   $successIcons,
   $errorIcons,
   $errorMessages,
-  $signinForm,
+  $signInForm,
   $signInUserId,
   $signInPassword,
-  $signinButton,
-  $signupLink,
-  $signinLink,
-  $signupForm,
-  $signupUserId,
-  $signupName,
-  $signupPassword,
-  $signupConfirm,
-  $signupButton
+  $signInButton,
+  $signUpLink,
+  $signInLink,
+  $signUpForm,
+  $signUpUserId,
+  $signUpName,
+  $signUpPassword,
+  $signUpConfirm,
+  $signUpButton
 };
