@@ -84,26 +84,6 @@
     </style>
   </head>
   <body>
-    <script>
-      const $firstBody = document.querySelector('body');
-      const darkModeMediaQuery = window.matchMedia(
-        '(prefers-color-scheme: dark)'
-      );
-
-      darkModeMediaQuery.addListener(e => {
-        $firstBody.classList.toggle(
-          'dark',
-          (e.matches && localStorage.getItem('theme') === '') ||
-            localStorage.getItem('theme') === 'dark' ||
-            localStorage.getItem('theme') !== 'white'
-        );
-      });
-
-      $firstBody.classList.toggle(
-        'dark',
-        localStorage.getItem('theme') === 'dark'
-      );
-    </script>
     <h1 class="title">Dark Mode</h1>
     <div class="toggle-button">
       <div class="toggle-button-switch"></div>
