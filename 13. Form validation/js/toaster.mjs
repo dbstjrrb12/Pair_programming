@@ -1,3 +1,5 @@
+import { $body } from './node.mjs';
+
 const createToast = (type, title, message) => {
   const $fragment = document.createDocumentFragment();
   const $toast = document.createElement('div');
@@ -38,4 +40,15 @@ const createToast = (type, title, message) => {
   return $fragment;
 };
 
-export default createToast;
+const toast = target => {
+  if (target.getAttribute('disabled') !== 'disabled') {
+    $body.appendChild(
+      createToast('success', 'Well done!', 'Signin successfully')
+    );
+    setTimeout(() => {
+      $body.removeChild($body.querySelector('.toast'));
+    }, 3000);
+  }
+};
+
+export default toast;
