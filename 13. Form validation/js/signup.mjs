@@ -1,65 +1,68 @@
 import * as Node from './node.mjs';
 import {
-  isAllValidate,
+  validationStates,
   validateEmail,
   validateName,
   validatePassword,
-  validateConfirm,
+  validatePasswordConfirm,
   controlPopup
 } from './state.mjs';
 import toast from './toaster.mjs';
 
 // Event handler binding
-Node.$signinLink.onclick = e => {
+Node.$signInLink.onclick = e => {
   if (!e.target.matches('.link > a')) return;
-  Node.$signinForm.classList.remove('hidden');
-  Node.$signupForm.classList.add('hidden');
+
+  Node.$signInForm.classList.remove('hidden');
+  Node.$signUpForm.classList.add('hidden');
 };
 
-Node.$signupUserId.onkeyup = e => {
+Node.$signUpUserId.onkeyup = e => {
   validateEmail(e.target.value);
 
   controlPopup(e.target, 'email');
 };
 
-Node.$signupName.onkeyup = e => {
+Node.$signUpName.onkeyup = e => {
   validateName(e.target.value);
 
   controlPopup(e.target, 'name');
 };
 
-Node.$signupPassword.onkeyup = e => {
+Node.$signUpPassword.onkeyup = e => {
   validatePassword(e.target.value);
+  console.log(validationStates.get());
 
   controlPopup(e.target, 'password');
 };
 
-Node.$signupConfirm.onkeyup = e => {
-  validateConfirm(e.target.value);
+Node.$signUpConfirm.onkeyup = e => {
+  validatePasswordConfirm(e.target.value);
 
-  controlPopup(e.target, 'confirm');
+  controlPopup(e.target, 'passwordConfirm');
 };
 
-Node.$signupForm.onsubmit = e => {
+Node.$signUpForm.onsubmit = e => {
   e.preventDefault();
 
   toast(e.target);
 
   console.log({
-    email: Node.$signupUserId.value,
-    password: Node.$signupPassword.value,
-    name: Node.$signupName.value,
-    confirm: Node.$signupConfirm.value
+    email: Node.$signUpUserId.value,
+    password: Node.$signUpPassword.value,
+    name: Node.$signUpName.value,
+    passwordConfirm: Node.$signUpConfirm.value
   });
 };
 
-Node.$signinLink.onclick = e => {
+Node.$signInLink.onclick = e => {
   if (!e.target.matches('.link > a')) return;
 
-  Node.$signinForm.classList.remove('hidden');
-  Node.$signupForm.classList.add('hidden');
+  Node.$signInForm.classList.remove('hidden');
+  Node.$signUpForm.classList.add('hidden');
 
-  isAllValidate.initialize();
+  const GOTOSIGNIN = true;
+  validationStates.initialize(GOTOSIGNIN);
 };
 
 const signup = {};

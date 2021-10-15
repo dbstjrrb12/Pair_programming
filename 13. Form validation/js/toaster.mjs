@@ -1,43 +1,21 @@
 import { $body } from './node.mjs';
 
 const createToast = (type, title, message) => {
-  const $fragment = document.createDocumentFragment();
   const $toast = document.createElement('div');
-  const $title = document.createElement('h4');
-  const $message = document.createElement('div');
-  const $icon = document.createElement('svg');
-  const $use = document.createElement('use');
-  const $p = document.createElement('p');
-  const $close = document.createElement('a');
+  $toast.classList.add('toast', `toast-${type}`);
 
-  $icon.appendChild($use);
-  $message.appendChild($icon);
+  $toast.innerHTML = `
+    <h4 class="toast-heading">${title}</h4>
+    <div class="toast-message">
+      <svg width="24" height="24">
+        <use xlink:href="#${type}" />
+      </svg>
+      <p>${message}</p>
+    </div>
+    <a class="close">&times;</a>
+  `;
 
-  $p.appendChild(document.createTextNode(message));
-  $message.appendChild($p);
-
-  $title.appendChild(document.createTextNode(title));
-  $toast.appendChild($title);
-  $toast.appendChild($message);
-
-  // $close.appendChild(document.createTextNode(escape('&amp;')));
-  $close.innerHTML = '&times;';
-  $toast.appendChild($close);
-
-  $fragment.appendChild($toast);
-
-  $toast.classList.add('toast');
-  $toast.classList.add(`toast-${type}`);
-
-  $title.classList.add('toast-heading');
-  $message.classList.add('toast-message');
-  $close.classList.add('close');
-
-  $icon.setAttribute('width', '24px');
-  $icon.setAttribute('height', '24px');
-  $use.setAttribute('xlink:href', `#${type}`);
-
-  return $fragment;
+  return $toast;
 };
 
 const toast = target => {
@@ -45,6 +23,7 @@ const toast = target => {
     $body.appendChild(
       createToast('success', 'Well done!', 'Signin successfully')
     );
+
     setTimeout(() => {
       $body.removeChild($body.querySelector('.toast'));
     }, 3000);
