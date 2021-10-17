@@ -1,7 +1,6 @@
 // DOM Nodes
-const $increase = document.querySelector('.increase');
+const $container = document.querySelector('.container');
 const $counter = document.querySelector('.counter');
-const $decrease = document.querySelector('.decrease');
 
 // state function (with closure);
 const count = (function () {
@@ -10,12 +9,10 @@ const count = (function () {
   return {
     increase() {
       count += 1;
-      return count;
     },
 
     decrease() {
       count += count > 0 ? -1 : 0;
-      return count;
     },
 
     getCount() {
@@ -31,12 +28,10 @@ const countRender = () => {
 // Event handlers binding
 window.addEventListener('DOMContentLoaded', countRender);
 
-$increase.onclick = () => {
-  count.increase();
-  countRender();
-};
+$container.onclick = e => {
+  if (e.target.classList.contains('counter')) return;
 
-$decrease.onclick = () => {
-  count.decrease();
+  e.target.classList.contains('increase') ? count.increase() : count.decrease();
+
   countRender();
 };
