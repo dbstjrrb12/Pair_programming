@@ -4,82 +4,77 @@ const $startStop = $display.nextElementSibling;
 const $resetLap = $startStop.nextElementSibling;
 const $laps = document.querySelector('.laps');
 
-const setMinutes = (function () {
-  let minutes = 0;
-
-  return {
-    increaseMinutes() {
-      minutes += 1;
-      console.log('미닛: ' + minutes);
-    },
-
-    getMinutes() {
-      return minutes;
-    },
-
-    setInitialize() {
-      minutes = 0;
-    }
+const setTime = (function () {
+  const time = {
+    milliseconds: 0,
+    seconds: 0,
+    minutes: 0
   };
-})();
-
-const setSeconds = (function () {
-  let seconds = 0;
 
   return {
-    increaseSeconds() {
-      seconds += 1;
-      seconds %= 60;
-      console.log('세컨드: ' + seconds);
-      if (seconds === 0) setMinutes.increaseMinutes();
+    initialize() {
+      time.milliseconds = 0;
+      time.seconds = 0;
+      time.minutes = 0;
     },
 
-    getSeconds() {
-      return seconds;
+    get(timeType) {
+      return time[timeType];
     },
 
-    setInitialize() {
-      seconds = 0;
-    }
-  };
-})();
-
-const setMilliseconds = (function () {
-  let milliseconds = 0;
-
-  return {
     increaseMilliSeconds() {
-      milliseconds += 1;
-      milliseconds %= 100;
-      //   console.log('밀리세컨드: ' + milliseconds);
-      if (milliseconds === 0) setSeconds.increaseSeconds();
-      const seconds = setSeconds.getSeconds();
-      const minutes = setMinutes.getMinutes();
+      time.milliseconds = (time.milliseconds + 1) % 100;
+
+      if (time.milliseconds === 0) setTime.increaseSeconds();
+
+      const displayMilliseconds =
+        time.milliseconds < 10 ? '0' + time.milliseconds : time.milliseconds;
+      const displaySeconds =
+        time.seconds < 10 ? '0' + time.seconds : time.seconds;
+      const displayMinutes =
+        time.minutes < 10 ? '0' + time.minutes : time.minutes;
 
       $display.textContent = $display.textContent
         .split(':')
         .map((_, i) =>
           i === 0
-            ? minutes < 10
-              ? '0' + minutes
-              : minutes
+            ? displayMinutes
             : i === 1
-            ? seconds < 10
-              ? '0' + seconds
-              : seconds
-            : milliseconds < 10
-            ? '0' + milliseconds
-            : milliseconds
+            ? displaySeconds
+            : displayMilliseconds
         )
         .join(':');
     },
 
-    getMilliseconds() {
-      return milliseconds;
+    increaseSeconds() {
+      time.seconds = (time.seconds + 1) % 60;
+      if (time.seconds === 0) setTime.increaseMinutes();
     },
 
-    setInitialize() {
-      milliseconds = 0;
+    increaseMinutes() {
+      time.minutes = (time.minutes + 1) % 100;
+    }
+  };
+})();
+
+const startStopToggle = (function () {
+  let toggle = true;
+  let interval;
+
+  return {
+    setState() {
+      toggle = !toggle;
+    },
+
+    getState() {
+      return toggle;
+    },
+
+    setDisplayButton() {
+      toggle
+        ? ($resetLap.removeAttribute('disabled'),
+          (interval = setInterval(setTime.increaseMilliSeconds, 10)))
+        : clearInterval(interval);
     }
   };
 })();
@@ -102,34 +97,32 @@ const controlLapCount = (function () {
   };
 })();
 
-const lapRender = fragment => {
-  $laps.appendChild(fragment);
+const lapRender = () => {
+  controlLapCount.increaseLapCount();
+
+  const laps = `<div>${controlLapCount.getLapCount()}</div><div>${
+    $display.textContent
+  }</div>`;
+
+  $laps.insertAdjacentHTML('beforeend', laps);
 };
 
 // Event handlers binding
-let interval;
-let toggle = true;
-
 $startStop.onclick = e => {
-  e.target.textContent = toggle ? 'Stop' : 'Start';
-  $resetLap.textContent = toggle ? 'Lap' : 'Reset';
+  e.target.textContent = startStopToggle.getState() ? 'Stop' : 'Start';
+  $resetLap.textContent = startStopToggle.getState() ? 'Lap' : 'Reset';
 
-  if (toggle) {
-    $resetLap.removeAttribute('disabled');
-    interval = setInterval(setMilliseconds.increaseMilliSeconds, 10);
-  } else {
-    clearInterval(interval);
-  }
-  toggle = !toggle;
+  startStopToggle.setDisplayButton();
+  startStopToggle.setState();
 };
 
-$resetLap.onclick = e => {
-  if (e.target.textContent === 'Reset') {
+$resetLap.onclick = () => {
+  if (startStopToggle.getState()) {
     $display.textContent = '00:00:00';
+
     controlLapCount.initializeLapCount();
-    setMilliseconds.setInitialize();
-    setSeconds.setInitialize();
-    setMinutes.setInitialize();
+    setTime.initialize();
+
     $resetLap.setAttribute('disabled', 'disabled');
 
     while ($laps.childElementCount > 2) {
@@ -137,20 +130,12 @@ $resetLap.onclick = e => {
     }
 
     $laps.style.display = '';
-  } else {
-    if ($laps.style.display === '') $laps.style.display = 'grid';
+  }
 
-    const $fragment = document.createDocumentFragment();
-    controlLapCount.increaseLapCount();
+  if (!startStopToggle.getState()) {
+    $laps.style.display =
+      $laps.style.display === '' ? 'grid' : $laps.style.display;
 
-    [controlLapCount.getLapCount(), $display.textContent].forEach(text => {
-      const $div = document.createElement('div');
-      const textNode = document.createTextNode(text);
-
-      $div.appendChild(textNode);
-      $fragment.appendChild($div);
-    });
-
-    lapRender($fragment);
+    lapRender();
   }
 };
