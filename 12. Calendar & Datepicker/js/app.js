@@ -1,4 +1,4 @@
-// DOM Node
+// DOM Nodes
 const $body = document.querySelector('body');
 const $datePicker = document.querySelector('.custom-datepicker');
 const $calendarDetail = document.querySelector('.calendar_detail');
@@ -75,23 +75,31 @@ const render = (prevDay, totalDay, firstDate, lastDate, gridCount) => {
 
   const prevdate = `${Array.from({ length: firstDate }, (_, i) => prevDay - i)
     .reverse()
-    .map(date => `<div class='date'>${date}</div>`)
+    .map(date => `<div class='prev-date'>${date}</div>`)
     .join('')}`;
 
   const nexdate = `${Array.from(
     { length: WEEK - (lastDate + 1) },
     (_, i) => i + 1
   )
-    .map(date => `<div class='date'>${date}</div>`)
+    .map(date => `<div class='next-date'>${date}</div>`)
     .join('')}`;
 
   $calendarGrid.innerHTML = day + prevdate + thisdate + nexdate;
 
+  const $selectDay = [
+    ...$calendarGrid.querySelectorAll('div.this-date')
+  ].filter((_, i) => i + 1 === yearMonth.getkey().day);
+
   const $today = [...$calendarGrid.querySelectorAll('div.this-date')].filter(
-    (_, i) => i + 1 === yearMonth.getkey().day
+    (_, i) =>
+      i + 1 === new Date().getDate() &&
+      yearMonth.getkey().month === new Date().getMonth() &&
+      yearMonth.getkey().year === new Date().getFullYear()
   );
 
-  $today[0].classList.add('select');
+  if ($today.length) $today[0].classList.add('today');
+  $selectDay[0].classList.add('select');
 };
 
 const getNow = () => {
@@ -133,7 +141,7 @@ const getNextPrev = count => {
 
   yearMonth.setkey(year, month, day);
 
-  // 불러오기
+  // 상태값 불러오기
   const newNow = yearMonth.getkey();
 
   const prevDay = new Date(newNow.year, newNow.month, 0).getDate();
@@ -160,10 +168,8 @@ const insertInputValue = () => {
   }`;
 };
 
-// Event Handler
+// Event handlers binding
 $body.onclick = e => {
-  console.log(e.target.className);
-  console.log();
   if (
     e.target.classList.contains('custom-datepicker') ||
     [...document.querySelectorAll('.calendar_detail *')]
@@ -203,8 +209,34 @@ $calendarGrid.onclick = ({ target }) => {
   target.classList.add('select');
 
   const { year, month } = yearMonth.getkey();
-  yearMonth.setkey(year, month, +target.textContent);
 
-  // console.log(month);
-  $datePicker.value = insertInputValue();
+  if (target.classList.contains('prev-date')) {
+    const prevMonth = month === 0 ? 11 : month - 1;
+    const prevYear = prevMonth === 11 ? year - 1 : year;
+
+    $datePicker.value = `${prevYear}-${
+      prevMonth < 9 ? `0${prevMonth + 1}` : prevMonth + 1
+    }-${
+      +target.textContent < 10 ? `0${+target.textContent}` : +target.textContent
+    }`;
+    yearMonth.setkey(year, month, +target.textContent);
+  }
+
+  if (target.classList.contains('next-date')) {
+    const nextMonth = month === 11 ? 0 : month + 1;
+    const nextYear = nextMonth === 0 ? year + 1 : year;
+
+    $datePicker.value = `${nextYear}-${
+      nextMonth < 9 ? `0${nextMonth + 1}` : nextMonth + 1
+    }-${
+      +target.textContent < 10 ? `0${+target.textContent}` : +target.textContent
+    }`;
+    yearMonth.setkey(year, month, +target.textContent);
+  }
+
+  if (target.classList.contains('this-date')) {
+    yearMonth.setkey(year, month, +target.textContent);
+
+    $datePicker.value = insertInputValue();
+  }
 };
