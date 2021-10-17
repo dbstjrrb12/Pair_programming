@@ -1,8 +1,10 @@
+// DOM Nodes
 const $container = document.querySelector('.container');
 const $navigation = document.querySelector('nav');
 const $main = document.querySelector('main');
 const $icon = document.querySelector('.toggle');
 
+// State function
 const toggleActiveClass = () => {
   $navigation.classList.toggle('active');
   $navigation.classList.toggle('notransition');
@@ -11,12 +13,12 @@ const toggleActiveClass = () => {
 };
 
 const toggleState = () => {
-  let ts = localStorage.getItem('toggleState');
-  if (ts === '1') {
-    toggleActiveClass();
-  }
+  const localStorageState = localStorage.getItem('toggleState');
+
+  if (localStorageState === '1') toggleActiveClass();
 };
 
+// Event handler binding
 window.addEventListener('DOMContentLoaded', toggleState);
 
 $container.onclick = e => {
@@ -27,9 +29,8 @@ $container.onclick = e => {
   $main.classList.remove('notransition');
   $icon.classList.remove('notransition');
 
-  if ($navigation.classList.contains('active')) {
-    localStorage.setItem('toggleState', '1');
-  } else {
-    localStorage.setItem('toggleState', '0');
-  }
+  localStorage.setItem(
+    'toggleState',
+    $navigation.classList.contains('active') ? '1' : '0'
+  );
 };
