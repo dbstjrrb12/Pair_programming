@@ -137,46 +137,19 @@
         });
       };
 
-      // Node
+      // DOM Nodes
       const $tabs = document.querySelector('.tabs');
       const $spinner = document.querySelector('.spinner');
-     
 
       // state function
       const render = value => {
-          const $fragment = document.createDocumentFragment(); 
-          const $nav = document.createElement('nav'); 
-          const $glider = document.createElement('span'); 
+        const nav = `<nav>${value.map((v,i) => `<div class="tab" data-index="${i}">${v.title}</div>`).join('')}<span class="glider"></span></nav>`;
+        const tabs = `${value.map((v,i)=>`<div class="tab-content ${i === 0? 'active' : ''}">${v.content}</div>`).join('')}`;
 
-          $glider.classList.add('glider'); 
-          $nav.appendChild($glider);
-          $fragment.appendChild($nav); 
-
-          value.forEach(({title, content}, i) => {
-              // title
-              const $navDiv = document.createElement('div'); 
-              const $titleTextNode = document.createTextNode(title); 
-
-              $navDiv.classList.add('tab'); 
-              $navDiv.dataset.index = `${i}`; 
-              
-              $navDiv.appendChild($titleTextNode); 
-              $nav.insertBefore($navDiv, $nav.lastElementChild); 
-
-              // content
-              const $div = document.createElement('div'); 
-              const $contentTextNode = document.createTextNode(content);
-              
-              $div.classList.add('tab-content'); 
-              if(i <= 0) $div.classList.add('active');
-              $div.appendChild($contentTextNode); 
-              $fragment.appendChild($div);
-          })
-
-          $tabs.appendChild($fragment);
+        $tabs.innerHTML = nav + tabs; 
       }
 
-      const activate = ({target}) => {
+      const activateTab = ({target}) => {
         if(!target.matches('.tabs > nav > div')) return; 
 
         const $glider = document.querySelector('.glider'); 
@@ -191,7 +164,7 @@
         })
       };
 
-      // Event handler
+      // Event handler binding
       fetchTabsData().then(value => {
         $tabs.style.setProperty('--tabs-length', value.length);
         $spinner.setAttribute('hidden', '');
@@ -199,8 +172,7 @@
         render(value); 
       });
 
-      $tabs.onclick = activate; 
-      
+      $tabs.onclick = activateTab; 
     </script>
   </body>
 </html>
