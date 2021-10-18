@@ -45,7 +45,6 @@
         --columns: 7;
 
         width: calc(var(--calendar-size) * 1px);
-        /* height: calc(1.5 * calc(var(--calendar-size) * 1px)); */
         font-size: calc(var(--calendar-size) / var(--columns) * 2%);
 
         display: none;
@@ -69,7 +68,6 @@
       .calendar_nav {
         background: #2cdb58;
         display: flex;
-        /* flex: 1 1 10%; */
         justify-content: space-between;
         padding: 20px;
       }
@@ -94,12 +92,12 @@
       .prev {
         border: 0;
         background-color: rgba(0, 0, 0, 0);
+        cursor: pointer;
       }
 
       .next > i,
       .prev > i {
         color: white;
-        /* font-size: 18px; */
       }
 
       .calendar_grid {
@@ -135,8 +133,13 @@
         color: red;
       }
 
+      .today {
+        border: 1px #2cdb58 solid;
+      }
+
       .this-date,
-      .date {
+      .prev-date,
+      .next-date {
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -149,13 +152,15 @@
       }
 
       .this-date:hover,
-      .date:hover {
+      .prev-date:hover,
+      .next-date:hover {
         background-color: #2cdb58;
         color: white;
         cursor: pointer;
       }
 
-      .date {
+      .prev-date,
+      .next-date {
         color: gray;
       }
 

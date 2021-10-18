@@ -72,83 +72,52 @@
   </head>
   <body>
     <h1 class="title">Carousel Slider</h1>
-    <div class="carousel">
-      <!-- <div class="carousel-slides">
-        <img src="movies/movie-4.jpg">
-        <img src="movies/movie-1.jpg">
-        <img src="movies/movie-2.jpg">
-        <img src="movies/movie-3.jpg">
-        <img src="movies/movie-4.jpg">
-        <img src="movies/movie-1.jpg">
-      </div>
-      <button class="carousel-control prev">&laquo;</button>
-      <button class="carousel-control next">&raquo;</button> -->
-    </div>
+    <div class="carousel"></div>
     <script>
       const carousel = ($container, images) => {
-        const $fragment = document.createDocumentFragment();
-        const $carouselSlides = document.createElement('div');
-        $carouselSlides.classList.add('carousel-slides');
+        // Rendering
+        const carouselImages = `<div class="carousel-slides">${images
+          .map((value, i, { length }) =>
+            i === length - 1 ? `<img src="${value}">` : ``
+          )
+          .join('')}${images
+          .map(value => `<img src="${value}">`)
+          .join('')}${images
+          .map((value, i) => (i === 0 ? `<img src="${value}">` : ``))
+          .join('')}</div>`;
 
-        images.forEach(image => {
-          const $img = document.createElement('img');
+        const imagesMoveButton = `<button class="carousel-control prev">&laquo;</button><button class="carousel-control next">&raquo;</button>`;
 
-          $img.setAttribute('src', image);
-          $carouselSlides.appendChild($img);
+        $container.innerHTML = carouselImages + imagesMoveButton;
 
-          $container.style.width = $img.naturalWidth + 10 + 'px';
-        });
+        const $carouselSlides = $container.querySelector('.carousel-slides');
 
-        const firstImageClone = $carouselSlides.firstElementChild.cloneNode();
-        const lastImageClone = $carouselSlides.lastElementChild.cloneNode();
+        // 고정값 수정 필요
+        // const $img = $container.querySelector('img');
+        $container.style.width = '351px';
 
-        $carouselSlides.insertBefore(
-          lastImageClone,
-          $carouselSlides.firstElementChild
-        );
-
-        $carouselSlides.appendChild(firstImageClone);
-
-        const $prevButton = document.createElement('button');
-        $prevButton.innerHTML = '&laquo;';
-        $prevButton.classList.add('carousel-control');
-        $prevButton.classList.add('prev');
-
-        const $nextButton = document.createElement('button');
-        $nextButton.innerHTML = '&raquo;';
-        $nextButton.classList.add('carousel-control');
-        $nextButton.classList.add('next');
-
-        $fragment.appendChild($carouselSlides);
-        $fragment.appendChild($prevButton);
-        $fragment.appendChild($nextButton);
-
-        $container.appendChild($fragment);
         $container.style.setProperty('opacity', '1');
-        $carouselSlides.style.setProperty('--duration', '1000');
+        $carouselSlides.style.setProperty('--duration', '500');
         $carouselSlides.style.setProperty('--currentSlide', '1');
 
+        // Event handlers biding
         let $transitionEnd = true;
 
         $carouselSlides.ontransitionend = () => {
           $transitionEnd = true;
-          if (
-            +window
-              .getComputedStyle($carouselSlides)
-              .getPropertyValue('--currentSlide') === 5
-          ) {
-            $carouselSlides.style.setProperty('--duration', '0');
-            $carouselSlides.style.setProperty('--currentSlide', '1');
-            $transitionEnd = true;
-          }
 
-          if (
-            +window
-              .getComputedStyle($carouselSlides)
-              .getPropertyValue('--currentSlide') === 0
-          ) {
+          const currentSlide = +window
+            .getComputedStyle($carouselSlides)
+            .getPropertyValue('--currentSlide');
+
+          const isEnd = currentSlide === 5 || currentSlide === 1;
+
+          if (isEnd) {
             $carouselSlides.style.setProperty('--duration', '0');
-            $carouselSlides.style.setProperty('--currentSlide', '4');
+            $carouselSlides.style.setProperty(
+              '--currentSlide',
+              `${Math.abs(currentSlide - 4)}`
+            );
             $transitionEnd = true;
           }
         };
@@ -165,17 +134,15 @@
           if (currentSlide === 1 || currentSlide === 4)
             $carouselSlides.style.setProperty('--duration', '500');
 
-          if (e.target.classList.contains('next')) {
-            $carouselSlides.style.setProperty(
-              '--currentSlide',
-              currentSlide + 1
-            );
-          } else if (e.target.classList.contains('prev')) {
-            $carouselSlides.style.setProperty(
-              '--currentSlide',
-              currentSlide - 1
-            );
-          }
+          e.target.classList.contains('next')
+            ? $carouselSlides.style.setProperty(
+                '--currentSlide',
+                currentSlide + 1
+              )
+            : $carouselSlides.style.setProperty(
+                '--currentSlide',
+                currentSlide - 1
+              );
         };
       };
 

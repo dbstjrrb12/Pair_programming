@@ -1,12 +1,13 @@
-// Node
+// DOM Node
 const $scrollIcon = document.querySelector('.scroll-icon');
 
-// Controll
+// Throttle function
 const throttle = (callback, delay) => {
   let timerId;
 
   return event => {
     if (timerId) return;
+
     timerId = setTimeout(
       () => {
         callback(event);
@@ -18,7 +19,7 @@ const throttle = (callback, delay) => {
   };
 };
 
-// Event Handler
+// Event Handlers binding
 window.addEventListener(
   'scroll',
   throttle(() => {
